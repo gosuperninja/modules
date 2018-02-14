@@ -7,6 +7,7 @@ package gormdb
 // db.name=dbname
 // db.password=dbpassword
 // db.singulartable=false # default=false
+// db.parseTimeLoc=UTC
 
 import (
 	"fmt"
@@ -41,11 +42,12 @@ func OpenDB(dbDriver string, dbInfo string) {
 }
 
 type DbInfo struct {
-	DbDriver   string
-	DbHost     string
-	DbUser     string
-	DbPassword string
-	DbName     string
+	DbDriver   		string
+	DbHost     		string
+	DbUser     		string
+	DbPassword 		string
+	DbName     		string
+	DbParseTimeLoc	string
 }
 
 func InitDBWithParameters(params DbInfo) {
@@ -56,7 +58,7 @@ func InitDBWithParameters(params DbInfo) {
 	case "postgres":
 		dbInfo = fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", params.DbHost, params.DbUser, params.DbName, params.DbPassword)
 	case "mysql":
-		dbInfo = fmt.Sprintf("%s:%s@%s/%s?charset=utf8&parseTime=True&loc=Local", params.DbUser, params.DbPassword, params.DbHost, params.DbName)
+		dbInfo = fmt.Sprintf("%s:%s@%s/%s?charset=utf8&parseTime=True&loc=%s", params.DbUser, params.DbPassword, params.DbHost, params.DbName, params.DbParseTimeLoc)
 	}
 	OpenDB(params.DbDriver, dbInfo)
 
@@ -72,6 +74,7 @@ func InitDB() {
 	params.DbUser = revel.Config.StringDefault("db.user", "default")
 	params.DbPassword = revel.Config.StringDefault("db.password", "")
 	params.DbName = revel.Config.StringDefault("db.name", "default")
+	params.DbParseTimeLoc = revel.Config.StringDefault("db.parseTimeLoc", "Local")
 
 	InitDBWithParameters(params)
 }
