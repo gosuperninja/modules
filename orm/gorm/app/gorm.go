@@ -48,6 +48,7 @@ type DbInfo struct {
 	DbPassword 		string
 	DbName     		string
 	DbParseTimeLoc	string
+	DbTls			string
 }
 
 func InitDBWithParameters(params DbInfo) {
@@ -58,7 +59,7 @@ func InitDBWithParameters(params DbInfo) {
 	case "postgres":
 		dbInfo = fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", params.DbHost, params.DbUser, params.DbName, params.DbPassword)
 	case "mysql":
-		dbInfo = fmt.Sprintf("%s:%s@%s/%s?charset=utf8&parseTime=True&loc=%s", params.DbUser, params.DbPassword, params.DbHost, params.DbName, params.DbParseTimeLoc)
+		dbInfo = fmt.Sprintf("%s:%s@%s/%s?charset=utf8&parseTime=True&loc=%s&tls=%s", params.DbUser, params.DbPassword, params.DbHost, params.DbName, params.DbParseTimeLoc, params.DbTls)
 	}
 	OpenDB(params.DbDriver, dbInfo)
 
@@ -75,6 +76,6 @@ func InitDB() {
 	params.DbPassword = revel.Config.StringDefault("db.password", "")
 	params.DbName = revel.Config.StringDefault("db.name", "default")
 	params.DbParseTimeLoc = revel.Config.StringDefault("db.parseTimeLoc", "Local")
-
+	params.DbTls = revel.Config.StringDefault("db.tls", "false")
 	InitDBWithParameters(params)
 }
